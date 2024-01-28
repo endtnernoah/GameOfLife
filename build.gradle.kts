@@ -10,8 +10,10 @@ repositories {
 }
 
 dependencies {
+    implementation("org.processing:core:3.3.7")
     testImplementation(platform("org.junit:junit-bom:5.9.1"))
     testImplementation("org.junit.jupiter:junit-jupiter")
+
 }
 
 tasks.test {
