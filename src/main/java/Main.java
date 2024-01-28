@@ -9,35 +9,34 @@ public class Main extends PApplet {
 
     private int cellSpaceX = WIDTH / CELL_SIZE;
     private int cellSpaceY = HEIGHT / CELL_SIZE;
-
-    private int getNextNumber(){
-        return random.nextInt();
-    }
-
     private int[] currentGeneration = new int[cellSpaceX * cellSpaceY];
     private int[] nextGeneration = new int[cellSpaceX * cellSpaceY];
     private Random random = new Random();
+    private float cellColor = 0;
+    private float targetColor = 0;
 
     public void settings(){
         size(WIDTH, HEIGHT);
 
         // Setting up current generation with random numbers
         for(int i = 0; i < currentGeneration.length; i++){
-            currentGeneration[i] = random.nextDouble() < 0.10 ? getNextNumber() : 0;
+            currentGeneration[i] = random.nextDouble() < 0.10 ? 1 : 0;
         }
     }
 
     public void setup(){
-        background(255);
-
+        colorMode(HSB, 360);
+        background(0, 255, 0);
 
         // Iterating over each cell to draw it
         for(int cellIndex = 0; cellIndex < currentGeneration.length; cellIndex++) {
             int cellX = cellIndex % cellSpaceX * CELL_SIZE;
             int cellY = cellIndex / cellSpaceY * CELL_SIZE;
 
+            int currentCell = currentGeneration[cellIndex];
+
             // Drawing each cell in the current generation
-            fill(255 * currentGeneration[cellIndex]);
+            fill(currentCell * cellColor, 255, currentCell * 255);
             rect(cellX, cellY, CELL_SIZE, CELL_SIZE);
         }
     }
@@ -51,18 +50,18 @@ public class Main extends PApplet {
             int currentCell = currentGeneration[cellIndex];
 
             // Drawing each cell in the current generation
-            fill(255 * currentGeneration[cellIndex]);
+            fill(currentCell * cellColor, 255, currentCell * 255);
             rect(cellX, cellY, CELL_SIZE, CELL_SIZE);
 
             // Checking calculating amount of neighbors
             int n = countNonZeroNeighbors(cellIndex);
 
             // Rule 1: currentCell == 0 & n == 3: currentCell -> 1
-            if (currentCell == 0 && n == 3) { nextGeneration[cellIndex] = getNextNumber(); }
+            if (currentCell == 0 && n == 3) { nextGeneration[cellIndex] = 1; }
             // Rule 2: currentCell == 1 & n < 2: currentCell -> 0
             else if (currentCell != 0 && n < 2){ nextGeneration[cellIndex] = 0; }
             // Rule 3: currentCell == 1 & n < 4: currentCell -> 1
-            else if (currentCell != 0 && n < 4){ nextGeneration[cellIndex] = getNextNumber(); }
+            else if (currentCell != 0 && n < 4){ nextGeneration[cellIndex] = 1; }
             // Rule 4: currentCell == 1 & n >= 4: currentCell -> 0
             else if (currentCell != 0 && n >= 4){ nextGeneration[cellIndex] = 0; }
         }
@@ -70,11 +69,19 @@ public class Main extends PApplet {
         // Updating generation
         currentGeneration = nextGeneration;
 
+        // Sleeping
         try {
             Thread.sleep(25);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+
+        if(targetColor == cellColor){
+            targetColor = 360 - cellColor;
+        }
+
+        if(targetColor == 360) cellColor += 1;
+        if(targetColor == 0) cellColor -= 1;
     }
 
     private int countNonZeroNeighbors(int cellIndex) {
