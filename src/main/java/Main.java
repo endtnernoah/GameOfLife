@@ -3,15 +3,15 @@ import processing.core.PApplet;
 import java.util.Random;
 
 public class Main extends PApplet {
-    private int WIDTH = 800;
-    private int HEIGHT = 800;
-    private int CELL_SIZE = 8;
+    private final int WIDTH = 800;
+    private final int HEIGHT = 800;
+    private final int CELL_SIZE = 8;
 
-    private int cellSpaceX = WIDTH / CELL_SIZE;
-    private int cellSpaceY = HEIGHT / CELL_SIZE;
+    private final int cellSpaceX = WIDTH / CELL_SIZE;
+    private final int cellSpaceY = HEIGHT / CELL_SIZE;
     private int[] currentGeneration = new int[cellSpaceX * cellSpaceY];
-    private int[] nextGeneration = new int[cellSpaceX * cellSpaceY];
-    private Random random = new Random();
+    private final int[] nextGeneration = new int[cellSpaceX * cellSpaceY];
+    private final Random random = new Random();
     private float cellColor = 0;
     private float targetColor = 0;
 
@@ -63,7 +63,7 @@ public class Main extends PApplet {
             // Rule 3: currentCell == 1 & n < 4: currentCell -> 1
             else if (currentCell != 0 && n < 4){ nextGeneration[cellIndex] = 1; }
             // Rule 4: currentCell == 1 & n >= 4: currentCell -> 0
-            else if (currentCell != 0 && n >= 4){ nextGeneration[cellIndex] = 0; }
+            else if (currentCell != 0){ nextGeneration[cellIndex] = 0; }
         }
 
         // Updating generation
