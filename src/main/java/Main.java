@@ -10,18 +10,20 @@ public class Main extends PApplet {
     private int cellSpaceX = WIDTH / CELL_SIZE;
     private int cellSpaceY = HEIGHT / CELL_SIZE;
 
+    private int getNextNumber(){
+        return random.nextInt();
+    }
 
     private int[] currentGeneration = new int[cellSpaceX * cellSpaceY];
     private int[] nextGeneration = new int[cellSpaceX * cellSpaceY];
-
+    private Random random = new Random();
 
     public void settings(){
         size(WIDTH, HEIGHT);
 
         // Setting up current generation with random numbers
         for(int i = 0; i < currentGeneration.length; i++){
-            Random random = new Random();
-            currentGeneration[i] = random.nextDouble() < 0.05 ? 1 : 0;
+            currentGeneration[i] = random.nextDouble() < 0.10 ? getNextNumber() : 0;
         }
     }
 
@@ -33,8 +35,6 @@ public class Main extends PApplet {
         for(int cellIndex = 0; cellIndex < currentGeneration.length; cellIndex++) {
             int cellX = cellIndex % cellSpaceX * CELL_SIZE;
             int cellY = cellIndex / cellSpaceY * CELL_SIZE;
-
-            int currentCell = currentGeneration[cellIndex];
 
             // Drawing each cell in the current generation
             fill(255 * currentGeneration[cellIndex]);
@@ -58,13 +58,13 @@ public class Main extends PApplet {
             int n = countNonZeroNeighbors(cellIndex);
 
             // Rule 1: currentCell == 0 & n == 3: currentCell -> 1
-            if (currentCell == 0 && n == 3) { nextGeneration[cellIndex] = 1; }
+            if (currentCell == 0 && n == 3) { nextGeneration[cellIndex] = getNextNumber(); }
             // Rule 2: currentCell == 1 & n < 2: currentCell -> 0
-            else if (currentCell == 1 && n < 2){ nextGeneration[cellIndex] = 0; }
+            else if (currentCell != 0 && n < 2){ nextGeneration[cellIndex] = 0; }
             // Rule 3: currentCell == 1 & n < 4: currentCell -> 1
-            else if (currentCell == 1 && n < 4){ nextGeneration[cellIndex] = 1; }
+            else if (currentCell != 0 && n < 4){ nextGeneration[cellIndex] = getNextNumber(); }
             // Rule 4: currentCell == 1 & n >= 4: currentCell -> 0
-            else if (currentCell == 1 && n >= 4){ nextGeneration[cellIndex] = 0; }
+            else if (currentCell != 0 && n >= 4){ nextGeneration[cellIndex] = 0; }
         }
 
         // Updating generation
