@@ -21,7 +21,7 @@ public class Main extends PApplet {
         // Setting up current generation with random numbers
         for(int i = 0; i < currentGeneration.length; i++){
             Random random = new Random();
-            currentGeneration[i] = random.nextInt(2);
+            currentGeneration[i] = random.nextDouble() < 0.05 ? 1 : 0;
         }
     }
 
@@ -99,6 +99,8 @@ public class Main extends PApplet {
                     if (currentGeneration[neighborIndex] != 0) {
                         count++;
                     }
+                } else {
+                    count -= 1;
                 }
             }
         }
