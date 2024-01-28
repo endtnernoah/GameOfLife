@@ -28,6 +28,18 @@ public class Main extends PApplet {
     public void setup(){
         background(255);
 
+
+        // Iterating over each cell to draw it
+        for(int cellIndex = 0; cellIndex < currentGeneration.length; cellIndex++) {
+            int cellX = cellIndex % cellSpaceX * CELL_SIZE;
+            int cellY = cellIndex / cellSpaceY * CELL_SIZE;
+
+            int currentCell = currentGeneration[cellIndex];
+
+            // Drawing each cell in the current generation
+            fill(255 * currentGeneration[cellIndex]);
+            rect(cellX, cellY, CELL_SIZE, CELL_SIZE);
+        }
     }
 
     public void draw(){
@@ -59,7 +71,7 @@ public class Main extends PApplet {
         currentGeneration = nextGeneration;
 
         try {
-            Thread.sleep(500);
+            Thread.sleep(25);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
