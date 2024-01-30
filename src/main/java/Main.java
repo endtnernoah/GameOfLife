@@ -6,7 +6,7 @@ import java.util.Random;
 public class Main extends PApplet {
     private final int WIDTH = 800;
     private final int HEIGHT = 800;
-    private final int CELL_SIZE = 8;
+    private final int CELL_SIZE = 4;
 
     private final int cellSpaceX = WIDTH / CELL_SIZE;
     private final int cellSpaceY = HEIGHT / CELL_SIZE;
@@ -22,7 +22,9 @@ public class Main extends PApplet {
     public void setup(){
         colorMode(HSB, 360);
         background(0, 255, 0);
+        frameRate(240);
 
+        // First display
         randomizeCurrentGeneration();
         drawCurrentGeneration();
     }
@@ -35,13 +37,6 @@ public class Main extends PApplet {
 
             // Updating generation
             currentGeneration = getNextGeneration(currentGeneration);
-
-            // Sleeping
-            try {
-                Thread.sleep(18);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
 
             // Updating color
             if(targetColor == cellColor){
