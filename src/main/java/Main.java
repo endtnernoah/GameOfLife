@@ -18,15 +18,12 @@ public class Main extends PApplet {
 
     public void settings(){
         size(WIDTH, HEIGHT);
-
-        // Setting up current generation with random numbers
-        for(int i = 0; i < currentGeneration.length; i++){
-            currentGeneration[i] = random.nextDouble() < 0.10 ? 1 : 0;
-        }
     }
     public void setup(){
         colorMode(HSB, 360);
         background(0, 255, 0);
+
+        randomizeCurrentGeneration();
     }
     public void draw(){
         // Only render if the simulation is running
@@ -56,8 +53,18 @@ public class Main extends PApplet {
     }
     public void keyPressed(KeyEvent event){
         int keyCode = event.getKeyCode();
-        if(keyCode == KeyCode.SPACE){
-            this.isRunning = ! this.isRunning;
+
+        switch (keyCode) {
+            case KeyCode.SPACE -> this.isRunning = !this.isRunning;
+            case KeyCode.R -> {
+                randomizeCurrentGeneration();
+                drawCurrentGeneration();
+            }
+        }
+    }
+    private void randomizeCurrentGeneration(){
+        for(int i = 0; i < currentGeneration.length; i++){
+            currentGeneration[i] = random.nextDouble() < 0.10 ? 1 : 0;
         }
     }
     private void drawCurrentGeneration(){
