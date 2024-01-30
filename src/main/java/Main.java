@@ -2,6 +2,7 @@ import processing.core.PApplet;
 import processing.event.KeyEvent;
 
 import java.util.Random;
+import java.util.Stack;
 
 public class Main extends PApplet {
     private final int WIDTH = 800;
@@ -15,6 +16,7 @@ public class Main extends PApplet {
     private float cellColor = 0;
     private float targetColor = 0;
     private boolean isRunning = false;
+    private final Stack<int[]> historyStack = new Stack<>();
 
     public void settings(){
         size(WIDTH, HEIGHT);
@@ -37,6 +39,7 @@ public class Main extends PApplet {
 
             // Updating generation
             currentGeneration = getNextGeneration(currentGeneration);
+            historyStack.push(currentGeneration);
 
             // Updating color
             if(targetColor == cellColor){
@@ -53,11 +56,17 @@ public class Main extends PApplet {
         switch (keyCode) {
             case KeyCode.SPACE -> this.isRunning = !this.isRunning;
             case KeyCode.R -> {
+                // Randomize current generation again and overwrite it. Possibly want to clear stack here
                 randomizeCurrentGeneration();
                 drawCurrentGeneration();
             }
             case KeyCode.ARROW_RIGHT -> {
                 currentGeneration = getNextGeneration(currentGeneration);
+                historyStack.push(currentGeneration);
+                drawCurrentGeneration();
+            }
+            case KeyCode.ARROW_LEFT -> {
+                if(! historyStack.empty()) currentGeneration = historyStack.pop();
                 drawCurrentGeneration();
             }
         }
@@ -66,6 +75,7 @@ public class Main extends PApplet {
         for(int i = 0; i < currentGeneration.length; i++){
             currentGeneration[i] = random.nextDouble() < 0.10 ? 1 : 0;
         }
+        historyStack.push(currentGeneration);
     }
     private void drawCurrentGeneration(){
         for(int cellIndex = 0; cellIndex < currentGeneration.length; cellIndex++){
