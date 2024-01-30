@@ -14,7 +14,7 @@ public class Main extends PApplet {
     private final Random random = new Random();
     private float cellColor = 0;
     private float targetColor = 0;
-    private boolean isRunning = true;
+    private boolean isRunning = false;
 
     public void settings(){
         size(WIDTH, HEIGHT);
@@ -24,6 +24,7 @@ public class Main extends PApplet {
         background(0, 255, 0);
 
         randomizeCurrentGeneration();
+        drawCurrentGeneration();
     }
     public void draw(){
         // Only render if the simulation is running
