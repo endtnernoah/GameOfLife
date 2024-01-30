@@ -56,6 +56,10 @@ public class Main extends PApplet {
                 randomizeCurrentGeneration();
                 drawCurrentGeneration();
             }
+            case KeyCode.ARROW_RIGHT -> {
+                currentGeneration = getNextGeneration(currentGeneration);
+                drawCurrentGeneration();
+            }
         }
     }
     private void randomizeCurrentGeneration(){
