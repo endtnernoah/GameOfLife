@@ -1,5 +1,6 @@
 import processing.core.PApplet;
 import processing.event.KeyEvent;
+import processing.event.MouseEvent;
 
 import java.util.Random;
 import java.util.Stack;
@@ -27,19 +28,17 @@ public class Main extends PApplet {
         frameRate(240);
 
         // First display
-        randomizeCurrentGeneration();
         drawCurrentGeneration();
     }
     public void draw(){
         // Only render if the simulation is running
         if( this.isRunning){
-            // Drawing the current generation
-
-            drawCurrentGeneration();
-
             // Updating generation
             currentGeneration = getNextGeneration(currentGeneration);
             historyStack.push(currentGeneration);
+
+            // Drawing the current generation
+            drawCurrentGeneration();
 
             // Updating color
             if(targetColor == cellColor){
@@ -55,22 +54,41 @@ public class Main extends PApplet {
 
         switch (keyCode) {
             case KeyCode.SPACE -> this.isRunning = !this.isRunning;
+            case KeyCode.C -> {
+                currentGeneration = new int[currentGeneration.length];
+                drawCurrentGeneration();
+            }
             case KeyCode.R -> {
                 // Randomize current generation again and overwrite it. Possibly want to clear stack here
                 randomizeCurrentGeneration();
                 drawCurrentGeneration();
             }
-            case KeyCode.ARROW_RIGHT -> {
+            case KeyCode.RIGHT -> {
                 currentGeneration = getNextGeneration(currentGeneration);
                 historyStack.push(currentGeneration);
                 drawCurrentGeneration();
             }
-            case KeyCode.ARROW_LEFT -> {
+            case KeyCode.LEFT -> {
                 if(! historyStack.empty()) currentGeneration = historyStack.pop();
                 drawCurrentGeneration();
             }
         }
     }
+    public void mousePressed(MouseEvent event){
+        int cellIndex = (event.getY() / CELL_SIZE) * cellSpaceX + (event.getX() / CELL_SIZE);
+
+        currentGeneration[cellIndex] = 1 - currentGeneration[cellIndex];
+        drawCell(cellIndex);
+    }
+    public void mouseDragged(){
+        int cellIndex = (pmouseY / CELL_SIZE) * cellSpaceX + (pmouseX / CELL_SIZE);
+
+        currentGeneration[cellIndex] = 1 - currentGeneration[cellIndex];
+        drawCell(cellIndex);
+    }
+
+
+
     private void randomizeCurrentGeneration(){
         for(int i = 0; i < currentGeneration.length; i++){
             currentGeneration[i] = random.nextDouble() < 0.10 ? 1 : 0;
@@ -79,15 +97,18 @@ public class Main extends PApplet {
     }
     private void drawCurrentGeneration(){
         for(int cellIndex = 0; cellIndex < currentGeneration.length; cellIndex++){
-            int cellX = cellIndex % cellSpaceX * CELL_SIZE;
-            int cellY = cellIndex / cellSpaceY * CELL_SIZE;
-
-            int currentCell = currentGeneration[cellIndex];
-
-            // Drawing each cell in the current generation
-            fill(currentCell * cellColor, 255, currentCell * 255);
-            rect(cellX, cellY, CELL_SIZE, CELL_SIZE);
+            drawCell(cellIndex);
         }
+    }
+    private void drawCell(int cellIndex){
+        int cellX = cellIndex % cellSpaceX * CELL_SIZE;
+        int cellY = cellIndex / cellSpaceY * CELL_SIZE;
+
+        int currentCell = currentGeneration[cellIndex];
+
+        // Drawing each cell in the current generation
+        fill(currentCell * cellColor, 255, currentCell * 255);
+        rect(cellX, cellY, CELL_SIZE, CELL_SIZE);
     }
     private int[] getNextGeneration(int[] currentGeneration){
         int[] nextGeneration = new int[currentGeneration.length];
