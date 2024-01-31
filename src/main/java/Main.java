@@ -52,8 +52,14 @@ public class Main extends PApplet {
             simulationSteps += 1;
         }
 
+        // Set the window title
         surface.setTitle(constructTitle());
         surface.setAlwaysOnTop(true);
+
+        if(historyStack.size() > 100) {
+            historyStack.remove(0);
+        }
+
     }
     public void keyPressed(KeyEvent event){
         int keyCode = event.getKeyCode();
