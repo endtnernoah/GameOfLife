@@ -18,6 +18,7 @@ public class Main extends PApplet {
     private float targetColor = 0;
     private boolean isRunning = false;
     private final Stack<int[]> historyStack = new Stack<>();
+    private int simulationSteps = 0;
 
     public void settings(){
         size(WIDTH, HEIGHT);
@@ -47,29 +48,40 @@ public class Main extends PApplet {
 
             if(targetColor == 360) cellColor += 1;
             if(targetColor == 0) cellColor -= 1;
+
+            simulationSteps += 1;
         }
+
+        surface.setTitle(constructTitle());
+        surface.setAlwaysOnTop(true);
     }
     public void keyPressed(KeyEvent event){
         int keyCode = event.getKeyCode();
 
         switch (keyCode) {
-            case KeyCode.SPACE -> this.isRunning = !this.isRunning;
+            case KeyCode.SPACE -> {
+                this.isRunning = !this.isRunning;
+                if(! historyStack.isEmpty()) historyStack.pop();
+            }
             case KeyCode.C -> {
                 currentGeneration = new int[currentGeneration.length];
+                simulationSteps = 0;
                 drawCurrentGeneration();
             }
             case KeyCode.R -> {
                 // Randomize current generation again and overwrite it. Possibly want to clear stack here
+                simulationSteps = 0;
                 randomizeCurrentGeneration();
                 drawCurrentGeneration();
             }
             case KeyCode.RIGHT -> {
+                simulationSteps += 1;
                 currentGeneration = getNextGeneration(currentGeneration);
                 historyStack.push(currentGeneration);
                 drawCurrentGeneration();
             }
             case KeyCode.LEFT -> {
-                if(! historyStack.empty()) currentGeneration = historyStack.pop();
+                if(! historyStack.empty()) currentGeneration = historyStack.pop(); simulationSteps -= 1;
                 drawCurrentGeneration();
             }
         }
@@ -86,8 +98,6 @@ public class Main extends PApplet {
         currentGeneration[cellIndex] = 1 - currentGeneration[cellIndex];
         drawCell(cellIndex);
     }
-
-
 
     private void randomizeCurrentGeneration(){
         for(int i = 0; i < currentGeneration.length; i++){
@@ -156,6 +166,16 @@ public class Main extends PApplet {
 
         return nextGeneration;
     }
+    private String constructTitle(){
+        String title = "";
+
+        title += isRunning ? frameCount / (millis() / 1000) + " FPS" : "Paused";
+        title += " | ";
+        title += "Steps: " + simulationSteps;
+
+        return title;
+    }
+
     public static void main(String[] args) {
         PApplet.main("Main");
     }
